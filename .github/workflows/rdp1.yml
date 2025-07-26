@@ -1,85 +1,22 @@
-name: Windows 10 Free RDP - Ngrok
+name: TOOLBOXLAP- LiteManager
 
-on: workflow_dispatch
-
-concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
-
-env:
-  NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-  RDP_USER: admin
-  RDP_PASS: admin
+on:
+  workflow_dispatch:
 
 jobs:
   build:
+    name: Start Building...
     runs-on: windows-latest
-
+    timeout-minutes: 9999
+    
     steps:
-      - name: Download Ngrok & NSSM
+      - name: Downloading & Installing Essentials
         run: |
-          # Download Ngrok
-          Invoke-WebRequest https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-windows-amd64.zip -OutFile ngrok.zip
-          
-          # Download NSSM (Updated Link)
-          Invoke-WebRequest https://github.com/nssm/nssm/releases/download/2.24/nssm-2.24.zip -OutFile nssm-2.24.zip
+          Invoke-WebRequest -Uri "https://gitlab.com/chamod12/lm_win-10_github_rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
+          cmd /c Downloads.bat
 
-      - name: Extract Ngrok & NSSM
-        run: |
-          Expand-Archive ngrok.zip -DestinationPath ngrok
-          # Extract NSSM (Updated to match the downloaded file name)
-          Expand-Archive nssm-2.24.zip -DestinationPath nssm
+      - name: TOOLBOXLAP
+        run: cmd /c show.bat
 
-      - name: Copy NSSM & Ngrok to Windows Directory
-        run: |
-          copy nssm\win64\nssm.exe C:\Windows\System32
-          copy ngrok\ngrok.exe C:\Windows\System32
-
-      - name: Connect your NGROK account
-        run: .\\ngrok\\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
-        env:
-          NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-
-      - name: Enable RDP Access
-        run: |
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server' -name "fDenyTSConnections" -Value 0
-          Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-          Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-
-      - name: Create RDP User
-        run: |
-          if (Get-LocalUser -Name "$env:RDP_USER" -ErrorAction SilentlyContinue) {
-              Set-LocalUser -Name "$env:RDP_USER" -Password (ConvertTo-SecureString "$env:RDP_PASS" -AsPlainText -Force)
-          } else {
-              New-LocalUser -Name "$env:RDP_USER" -Password (ConvertTo-SecureString "$env:RDP_PASS" -AsPlainText -Force)
-              Add-LocalGroupMember -Group "Administrators" -Member "$env:RDP_USER"
-              Enable-LocalUser -Name "$env:RDP_USER"
-          }
-          icacls "C:\Windows\Temp" /grant "$env:RDP_USER`:F"
-          icacls "C:\Windows\installer" /grant "$env:RDP_USER`:F"
-          Set-Service -Name "W32Time" -StartupType Automatic -ErrorAction Stop
-          Restart-Service W32Time
-          w32tm /resync /force
-
-      - name: Create Tunnel
-        run: |
-          nssm install ngrok C:\Windows\System32\ngrok.exe tcp 3389
-          nssm set ngrok AppDirectory C:\Windows\System32
-          nssm set ngrok AppStdout C:\ngrok.log
-          nssm set ngrok AppStderr C:\ngrok_error.log
-          nssm set ngrok AppRotateFiles 1
-          nssm start ngrok
-          Start-Sleep -Seconds 10 # Give ngrok time to start and establish tunnel
-          $ngrok_url = (Invoke-WebRequest -UseBasicParsing http://127.0.0.1:4040/api/tunnels | ConvertFrom-Json).tunnels[0].public_url
-          echo "::set-output name=ngrok_url::$ngrok_url"
-        id: ngrok_tunnel
-
-      - name: Display RDP Connection Info
-        run: |
-          echo "RDP User: ${{ env.RDP_USER }}"
-          echo "RDP Password: ${{ env.RDP_PASS }}"
-          echo "Ngrok Tunnel URL: ${{ steps.ngrok_tunnel.outputs.ngrok_url }}"
-
-      - name: Keep alive
-        run: |
-          Start-Sleep -Seconds 21600 # 6 hours
+      - name: like and subscribe 
+        run: cmd /c loop.bat
