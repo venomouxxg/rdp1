@@ -1,4 +1,4 @@
-name: TOOLBOXLAP- LiteManager
+name: NewAvica
 
 on:
   workflow_dispatch:
@@ -7,16 +7,16 @@ jobs:
   build:
     name: Start Building...
     runs-on: windows-latest
-    timeout-minutes: 9999
+    timeout-minutes: 360
     
     steps:
       - name: Downloading & Installing Essentials
         run: |
-          Invoke-WebRequest -Uri "https://gitlab.com/chamod12/lm_win-10_github_rdp/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
+          Invoke-WebRequest -Uri "https://gitlab.com/gusta7w7/pcrdp-avica/-/raw/main/Downloads.bat" -OutFile "Downloads.bat"
           cmd /c Downloads.bat
 
-      - name: TOOLBOXLAP
+      - name: Show Website
         run: cmd /c show.bat
 
-      - name: like and subscribe 
+      - name: Time Counter
         run: cmd /c loop.bat
