@@ -8,8 +8,8 @@ concurrency:
 
 env:
   NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-  RDP_USER: no
-  RDP_PASS: no
+  RDP_USER: admin
+  RDP_PASS: admin
 
 jobs:
   build:
